@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="ru">
+    <title>Игры и то, из чего они собраны</title>
+    <subtitle>Дневник разработки игр: сама игра, библиотеки, на которых она держится, и записи о том, как это делается.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://games.sansmith.dev/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://games.sansmith.dev"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    
+    <id>https://games.sansmith.dev/atom.xml</id>
+</feed>
