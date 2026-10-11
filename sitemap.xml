@@ -22,6 +22,18 @@
         <loc>https://games.sansmith.dev/projects/</loc>
     </url>
     <url>
+        <loc>https://games.sansmith.dev/projects/keldysh/</loc>
+        <lastmod>2026-09-29</lastmod>
+    </url>
+    <url>
+        <loc>https://games.sansmith.dev/projects/mapgen/</loc>
+        <lastmod>2026-05-04</lastmod>
+    </url>
+    <url>
+        <loc>https://games.sansmith.dev/projects/vernadsky/</loc>
+        <lastmod>2026-09-28</lastmod>
+    </url>
+    <url>
         <loc>https://games.sansmith.dev/topics/</loc>
     </url>
 </urlset>

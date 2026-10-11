@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+
+  
+  
+  
+  
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vernadsky · Игры и то, из чего они собраны</title>
+<meta name="description" content="Физическая география планеты: рельеф, вода, климат, биомы, стабильные идентификаторы. Не знает об игре.">
+
+<meta name="theme-color" content="#1d222a">
+<meta name="theme-color" content="#151e27" media="(prefers-color-scheme: dark)">
+
+<meta property="og:site_name" content="Игры и то, из чего они собраны">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vernadsky">
+<meta property="og:description" content="Физическая география планеты: рельеф, вода, климат, биомы, стабильные идентификаторы. Не знает об игре.">
+<meta property="og:url" content="https://games.sansmith.dev/projects/vernadsky/">
+
+
+
+
+
+  
+  
+  
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+      
+      
+    
+  
+
+<meta property="og:image" content="https://games.sansmith.dev/projects/vernadsky/map.biome.png">
+<meta property="article:published_time" content="2026-09-28">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vernadsky">
+<meta name="twitter:description" content="Физическая география планеты: рельеф, вода, климат, биомы, стабильные идентификаторы. Не знает об игре.">
+<link rel="icon" type="image/svg+xml" href="https://games.sansmith.dev/icon/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="https://games.sansmith.dev/icon/favicon.png">
+<link rel="apple-touch-icon" href="https://games.sansmith.dev/icon/apple-touch-icon.png">
+<link rel="alternate" type="application/atom+xml" title="Игры и то, из чего они собраны" href="https://games.sansmith.dev/atom.xml">
+<link rel="stylesheet" href="https://games.sansmith.dev/css/site.css">
+
+<link rel="stylesheet" href="https://games.sansmith.dev/giallo-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="https://games.sansmith.dev/giallo-dark.css" media="(prefers-color-scheme: dark)">
+
+
+<script>
+(function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('theme')}catch(e){}
+var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+var t=s||(d?'dark':'light');
+r.setAttribute('data-theme',t);
+/* Подсветка кода и цвет браузерного UI следуют выбранной теме. */
+var l=document.querySelector('link[href$="giallo-light.css"]'),k=document.querySelector('link[href$="giallo-dark.css"]');
+if(l&&k){l.media=t==='dark'?'not all':'all';k.media=t==='dark'?'all':'not all';}
+var ms=document.querySelectorAll('meta[name="theme-color"]');
+for(var i=0;i<ms.length;i++){if(!i){ms[i].removeAttribute('media');ms[i].setAttribute('content',t==='dark'?'#151e27':'#1d222a');}else{ms[i].remove();}}
+})();
+</script>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav-inner">
+    <span class="mark">Игры · <a class="mark-link" href="https://sansmith.dev">san-smith</a></span>
+    <nav>
+      
+      
+      
+      <a class="navlink" href="https://games.sansmith.dev/">Главная</a>
+      <a class="navlink" href="https://games.sansmith.dev/entries/">Записи</a>
+      <a class="navlink" href="https://games.sansmith.dev/projects/" aria-current="page">Проекты</a>
+      <a class="navlink" href="https://games.sansmith.dev/illustrations/">Иллюстрации</a>
+      <a class="navlink" href="https://games.sansmith.dev/topics/">Темы</a>
+      <a class="navlink" href="https://games.sansmith.dev/about/">О сайте</a>
+      <button class="themebtn" id="theme" type="button" aria-label="Переключить тему">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+
+
+<div class="sheet pad">
+  <div class="masthead" style="margin-bottom:var(--gap-md)">
+    <div class="masthead-top">
+      <a class="crumb" href="https://games.sansmith.dev/projects/">Все проекты</a>
+      <span class="grif">генератор планет · открытый код</span>
+    </div>
+    <h1 style="font-size:var(--fs-h2)">vernadsky</h1>
+    <p class="sub" style="font-size:15px">Физическая география планеты: рельеф, вода, климат, биомы, стабильные идентификаторы. Не знает об игре.</p>
+  </div>
+
+  
+  
+  <figure class="shot shot-column">
+    <img src="https://games.sansmith.dev/projects/vernadsky/map.biome.png" alt="Карта биомов" loading="lazy">
+    <figcaption>Биомы, сид 42</figcaption>
+  </figure>
+  
+
+  
+  <div class="links">
+    
+      <a class="btn-doc" href="https://github.com/san-smith/vernadsky">Репозиторий
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 4.5-1.4 4.5-5a4 4 0 00-1.1-2.8 3.7 3.7 0 00-.1-2.8s-1.2-.4-3.8 1.4a9.3 9.3 0 00-5 0C6.4 4.7 5.2 5.1 5.2 5.1a3.7 3.7 0 00-.1 2.8A4 4 0 004 10.7c0 3.6 1.7 4.7 4.5 5-.6.6-.6 1.2-.5 2V21"/></svg>
+      </a>
+    
+    
+  </div>
+  
+
+  <div class="pgrid">
+    <div class="prose"><h2 id="zachem-eto-nuzhno">Зачем это нужно</h2>
+<p>Планету для игры проще сгенерировать, чем нарисовать: карта нужна на тысячу
+провинций, и она должна быть правдоподобной. Рельеф, реки, климат и биомы
+связаны между собой, поэтому генерируются стадиями, каждая следующая
+опирается на предыдущие.</p>
+<p>Генератор намеренно нейтрален: он описывает физическую географию и ничего не
+знает о фракциях, экономике, игровых провинциях и правилах симуляции. Базовая
+единица деления карты называется <strong>территория</strong> — географическая единица без
+игровой семантики. Провинция, государство или морская зона — то, что читатель
+данных собирает из территорий и клеток уже на своей стороне.</p>
+<p>Предыдущая попытка, <code>mapgen</code>, была единым крейтом под конкретную игру.
+<code>vernadsky</code> — то, во что она выросла: алгоритмы (рельеф, биомы, климат,
+разбиение на территории) перенесены, а границы проведены заново.</p>
+<h2 id="kak-ustroeno">Как устроено</h2>
+<p>Репозиторий — это Cargo workspace из восьми крейтов. Стадии идут в фиксированном
+порядке, и каждая работает с тем, что оставила предыдущая:</p>
+<p><code>core</code> → <code>terrain</code> → <code>climate</code> → <code>biome</code> → <code>hydrology</code> → <code>territory</code> →
+<code>export</code> → <code>tools</code></p>
+<p>Вход всего конвейера — зерно и параметры; <code>skeleton_world(width, height, seed)</code>
+в <code>vernadsky-core</code> создаёт пустую сетку нужного размера, которую дальше
+заполняют стадии. Результат — одно значение <code>GeographicWorld</code>, которое можно
+сразу записать в файл экспорта.</p>
+<h2 id="stadii">Стадии</h2>
+<ul>
+<li><strong>core</strong> (<code>vernadsky-core</code>) — контракт данных: схема <code>GeographicWorld</code>,
+целочисленные решётки физических величин, пространства идентификаторов,
+канонический бинарный экспорт. Единственное место, где числа с плавающей
+точкой превращаются в экспортируемые значения.</li>
+<li><strong>terrain</strong> — рельеф: fBm-шум OpenSimplex2 на цилиндре (карта бесшовна по x,
+полюса зажимаются), эффект острова, сглаживание, степенная коррекция и
+нормировка min/max с целевой долей суши. На выходе — метры: уровень моря
+<code>0.5</code> соответствует <code>0 м</code>, шкала до ±6000 м. Эрозия подключается профилем
+(температурное выветривание и гидравлические капли из потока <code>terrain.erosion</code>).</li>
+<li><strong>climate</strong> — среднегодовая температура, относительная влажность и осадки
+по клеткам, пересчитанные в физические единицы (°C, %, мм/год); шум
+температуры берётся из потока <code>climate.temperature</code>.</li>
+<li><strong>biome</strong> — таблица из шестнадцати биомов как упорядоченные наборы правил
+(вода → горы → климат), все пороги лежат на решётках, граница между биомами
+дизерится по клеткам. Реестр <code>biomes-v1</code> владеет соответствием
+идентификатор ↔ имя ↔ категория ↔ канонический цвет.</li>
+<li><strong>hydrology</strong> — водоёмы и речная сеть. Водоёмы классифицируются заливкой от
+полюса: океан, а замкнутые компоненты делятся на моря и озёра по площади.
+Реки строятся по накоплению стока — маршрутизация по убыванию высоты с
+каноническими разрешениями ничьих; лёд блокирует сток, пустыни испаряют
+половину. Порог дренажа задаётся долей от клеток суши (<code>0.12 %</code>), поэтому
+сеть остаётся тонкой и ветвящейся на любой сетке.</li>
+<li><strong>territory</strong> — разбиение карты на территории: кандидаты на суше взвешиваются
+по климату и высоте, зёрна берутся равномерно по спектру весов, рост идёт
+многоисточниковым BFS с заполнением по ближайшему центроиду. Вода делится по
+связным компонентам, так что море никогда не остаётся одним неделимым
+пространством. Здесь же — регионы: континенты и морские бассейны как
+компоненты связности графа соседства территорий.</li>
+<li><strong>export</strong> — производные признаки: стартовый природный потенциал каждой
+территории суши (комфорт по температуре × влажность × равнинность, в
+промилле 0…1000) и нейтральные географические факты — близость к морю, устья
+рек, горный рельеф — как детерминированные запросы, которые потребитель
+трактует как порты, эстуарии и перевалы.</li>
+<li><strong>tools</strong> — отладочная утилита: рендерит слои мира и пишет экспорт.</li>
+</ul>
+<p>Две стадии — <code>territory</code> и <code>hydrology</code> — не потребляют случайность вообще:
+их результат полностью определяется предыдущими стадиями.</p>
+<h2 id="kontrakt">Контракт</h2>
+<p>Данные, которые отдаёт генератор:</p>
+<ul>
+<li><strong>Схема</strong> <code>GeographicWorld</code> версии 1. Идентификаторы клеток, территорий,
+регионов, водоёмов, рек и биомов — часть публичного контракта: по ним
+потребители связывают данные между экспортами, поэтому смена способа вывода
+идентификаторов — ломающее изменение.</li>
+<li><strong>Решётки.</strong> Все физические величины пересекают границу стадии и попадают в
+экспорт только как целые значения решёток. Это снимает вопрос платформенной
+арифметики: сравнивать и хешировать приходится целые.</li>
+<li><strong>Экспорт.</strong> Канонический бинарный формат: magic <code>VGW\0</code>, целые
+фиксированной ширины little-endian, у каждой переменной секции счётчик
+<code>u32</code>. В конце — <code>content_hash</code> (FNV-1a 64 по всем предыдущим байтам): это
+проверка целостности и воспроизводимости.</li>
+<li><strong>Версии.</strong> Файл несёт версию схемы, стратегию идентификаторов, версию
+реестра решёток и версию реестра биомов (<code>biomes-v1</code>) — файл самодостаточен
+для интерпретации.</li>
+</ul>
+<h2 id="determinizm-i-upravliaemyi-dreif">Детерминизм и управляемый дрейф</h2>
+<p>Генерация — чистая функция от зерна и параметров: одни и те же входы дают
+байт в байт одинаковый результат на каждом запуске и каждой поддерживаемой
+платформе.</p>
+<p>Случайность берётся из именованных потоков (<code>rng-streams-v1</code>): поток <code>ChaCha8</code>
+выводится из зерна мира и имени, закреплённого за стадией. Потоки независимы и
+перезапускаемы, поэтому добавление новой механики не сдвигает поведение уже
+существующих.</p>
+<p>Чтобы это не разъехалось молча, в репозитории лежат золотые манифесты: набор
+семян (включая граничные значения) с закреплёнными хешами полных экспортов и
+канарейка чувствительности хеша. Случайная недетерминированность или дрейф
+схемы валят тесты.</p>
+<p>Дрейф контента при этом бывает осознанным. Таких правок три, и каждая
+оформлена явно — с повышением версии параметров и перегенерацией золотых
+манифестов:</p>
+<ol>
+<li>Порог дренажа рек стал независим от разрешения сетки (параметры v3).</li>
+<li>Шум рельефа нормируется в пространстве карты: число базовых объектов —
+доля окружности карты (<code>features_across</code>, по умолчанию <code>1.5</code>), а не
+частота на клетку, плюс нижний предел детализации (<code>min_feature_cells</code>,
+по умолчанию <code>8</code>) против прибрежного «шума». Теперь любое разрешение
+рисует одну и ту же планету, а не рассыпается в архипелаг при росте
+сетки.</li>
+<li>Сглаживание рельефа стало бесшовным по x (пока в невыпущенном разделе):
+раньше горизонтальное окно блюра зажималось на краях карты, и рельеф
+ломался на шве, хотя шум, подъём острова и эрозия уже замыкались по
+цилиндру.</li>
+</ol>
+<h2 id="kak-poluchit-takuiu-kartu">Как получить такую карту</h2>
+<p>Сам генератор — библиотека; посмотреть на результат удобнее отладочной утилитой
+<code>vernadsky-tools</code>. Это инструмент диагностики, не часть контракта генератора:
+тяжёлые зависимости вроде <code>image</code> живут только в его крейте. Из входов нужен
+только seed — остальное имеет значения по умолчанию.</p>
+<pre class="giallo z-l-code z-d-code" ><code data-lang="shellscript"><span class="giallo-l"><span class="z-l-6 z-d-7">cargo</span><span class="z-l-2 z-d-6"> run</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">p</span><span class="z-l-2 z-d-6"> vernadsky-tools</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-</span><span class="z-l-2 z-d-6"> render</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-seed</span><span class="z-l-1 z-d-4"> 42</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-grid-height</span><span class="z-l-1 z-d-4"> 512</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-width</span><span class="z-l-1 z-d-4"> 512</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-out</span><span class="z-l-2 z-d-6"> map</span></span></code></pre>
+<p>Утилита собирает мир из семени через весь конвейер и растеризует каждый слой в
+свой PNG: имя файла — <code>&lt;out&gt;.&lt;слой&gt;.png</code>, слой рисуется отдельной картой.</p>
+<ul>
+<li><code>map.height.png</code> — высота;</li>
+<li><code>map.water.png</code> — вода;</li>
+<li><code>map.rivers.png</code> — реки;</li>
+<li><code>map.temperature.png</code>, <code>map.humidity.png</code>, <code>map.precipitation.png</code> — климат;</li>
+<li><code>map.biome.png</code> — биомы;</li>
+<li><code>map.territory.png</code>, <code>map.regions.png</code> — территории и регионы;</li>
+<li><code>map.potential.png</code> — природный потенциал.</li>
+</ul>
+<p>По умолчанию сетка 48×32, разбиение — 12 территорий суши и 8 водных. Ключи
+<code>--width</code> и <code>--grid-height</code> задают разрешение, <code>--land-count</code> и <code>--water-count</code> —
+разбиение, <code>--zoom</code> увеличивает картинку целым множителем (до 16×), если клеток
+мало и результат нужно рассмотреть.</p>
+<p>Тот же мир сохраняется как канонический экспорт и читается обратно:</p>
+<pre class="giallo z-l-code z-d-code" ><code data-lang="shellscript"><span class="giallo-l"><span class="z-l-6 z-d-7">cargo</span><span class="z-l-2 z-d-6"> run</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">p</span><span class="z-l-2 z-d-6"> vernadsky-tools</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-</span><span class="z-l-2 z-d-6"> dump</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-seed</span><span class="z-l-1 z-d-4"> 42</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-width</span><span class="z-l-1 z-d-4"> 512</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-grid-height</span><span class="z-l-1 z-d-4"> 512</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-out</span><span class="z-l-2 z-d-6"> world.gwb</span></span>
+<span class="giallo-l"><span class="z-l-6 z-d-7">cargo</span><span class="z-l-2 z-d-6"> run</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">p</span><span class="z-l-2 z-d-6"> vernadsky-tools</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-</span><span class="z-l-2 z-d-6"> validate</span><span class="z-l-1 z-d-4"> -</span><span class="z-l-1 z-d-4">-input</span><span class="z-l-2 z-d-6"> world.gwb</span></span></code></pre><pre class="giallo z-l-code z-d-code" ><code data-lang="plain"><span class="giallo-l"><span>world written to world.gwb (262144 cells, 20 territories, pipeline 1.60s)</span></span>
+<span class="giallo-l"><span>valid export world.gwb: 512×512 cells, 20 territories, 7 regions, 4 water bodies, 293 rivers; seed 0x000000000000002a, params version 4</span></span></code></pre>
+<p>Время конвейера зависит от машины; остальное — из самого файла. Мир можно читать
+и из экспорта, а не только из семени: <code>render --input world.gwb</code> рисует те же слои
+по уже собранному файлу.</p>
+<h2 id="chto-poluchilos">Что получилось</h2>
+<p>Одна команда выше, семя 42, сетка 512×512: 262 144 клетки, 20 территорий,
+7 регионов, 4 водоёма и 293 реки. Климатические слои рисуются на фиксированных
+физических шкалах — поэтому картинки разных семян сравнимы между собой. В
+категориальных слоях правила тоже фиксированы: биомы берут канонические цвета
+реестра, территории и регионы — детерминированную палитру.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.height.png" alt="Карта высот" /></p>
+<p><strong>Высота.</strong> Слой нормируется по самому миру, а не по общей шкале: тёмное — ниже,
+светлое — выше. Уровень моря — 0 м, полная шкала высот — ±6000 м.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.water.png" alt="Карта воды" /></p>
+<p><strong>Вода.</strong> Светлое — суша, голубым — вода; оттенок различает океан, море и озеро.
+В этом мире четыре водоёма.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.rivers.png" alt="Карта рек" /></p>
+<p><strong>Реки.</strong> 293 реки: подсвечены клетки русел — и на суше, и в воде.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.temperature.png" alt="Карта температуры" /></p>
+<p><strong>Температура.</strong> Фиксированная шкала −90…+60 °C (палитра RdBu): тёплый пояс у
+экватора, холодные полюса.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.humidity.png" alt="Карта влажности" /></p>
+<p><strong>Влажность.</strong> Фиксированная шкала 0…100 % (BrBG).</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.precipitation.png" alt="Карта осадков" /></p>
+<p><strong>Осадки.</strong> Фиксированная шкала 0…3000 мм/год (YlGnBu).</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.biome.png" alt="Карта биомов" /></p>
+<p><strong>Биомы.</strong> Шестнадцать биомов, цвета берутся из реестра <code>biomes-v1</code> — одного на
+все слои и экспорты.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.territory.png" alt="Карта территорий" /></p>
+<p><strong>Территории.</strong> 20 территорий — 12 на суше и 8 на воде, каждая своим цветом.
+Заполнение идёт по ближайшему центроиду, поэтому края зон многоугольные,
+со ступеньками по сетке клеток.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.regions.png" alt="Карта регионов" /></p>
+<p><strong>Регионы.</strong> Те же территории, сгруппированные в континенты и морские бассейны:
+семь регионов вместо двадцати цветов.</p>
+<p><img src="https://games.sansmith.dev/projects/vernadsky/map.potential.png" alt="Карта природного потенциала" /></p>
+<p><strong>Природный потенциал.</strong> По территориям суши, шкала 0…1000 ‰: от бурого к
+зелёному. Вода и клетки вне территорий остаются фоном.</p>
+<p>Карты воспроизводимы: тот же запуск даёт те же файлы, и это свойство под
+проверкой, а не пожелание — за случайное расхождение отвечают золотые манифесты
+из раздела выше.</p>
+</div>
+    <div>
+      
+      <ul class="facts">
+        
+          <li><span class="k">Лицензия</span><span class="v">MIT / Apache-2.0</span></li>
+        
+          <li><span class="k">Версия</span><span class="v">0.1.0</span></li>
+        
+          <li><span class="k">Издание</span><span class="v">Rust 2024</span></li>
+        
+          <li><span class="k">MSRV</span><span class="v">1.92.0</span></li>
+        
+          <li><span class="k">Части</span><span class="v">core, terrain, climate, biome, hydrology, territory, export, tools</span></li>
+        
+      </ul>
+      
+    </div>
+  </div>
+
+  
+    
+    
+    
+  
+
+  <div class="sheet-foot">
+    <span class="caption"><a class="caption-link" href="https://sansmith.dev">san-smith</a> · vernadsky</span>
+    <span class="caption">games.sansmith.dev</span>
+  </div>
+</div>
+
+</main>
+
+
+
+<script>
+(function(){
+  var b=document.getElementById('theme'), r=document.documentElement;
+  if(!b) return;
+  b.addEventListener('click',function(){
+    var n=r.getAttribute('data-theme')==='dark'?'light':'dark';
+    r.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+    var l=document.querySelector('link[href$="giallo-light.css"]'),k=document.querySelector('link[href$="giallo-dark.css"]');
+    if(l&&k){l.media=n==='dark'?'not all':'all';k.media=n==='dark'?'all':'not all';}
+    var m=document.querySelector('meta[name="theme-color"]');
+    if(m)m.setAttribute('content',n==='dark'?'#151e27':'#1d222a');
+  });
+})();
+</script>
+</body>
+</html>

@@ -276,8 +276,16 @@ a.pcard:hover .pname svg{color:var(--ochre-ink); transform:translate(2px,-2px)}
 
 
 /* ── снимок на странице проекта ────────────────────────────────── */
+/* Ширина блока задаётся полем extra.image_size во frontmatter статьи:
+   wide (по умолчанию) — вся ширина листа; column — колонка текста;
+   narrow — врезка. Картинка масштабируется под блок, пропорции сохраняются.
+   Суженный блок центрируется: у .shot боковые отступы нулевые, без auto
+   колонка и врезка прижимались бы к левому краю. */
 .shot{margin:0 0 var(--gap-lg); border:1px solid var(--line); border-radius:var(--radius);
   background:var(--paper2); overflow:hidden}
+.shot.shot-wide{max-width:none}
+.shot.shot-column{max-width:74ch; margin-inline:auto}
+.shot.shot-narrow{max-width:42ch; margin-inline:auto}
 .shot img{width:100%; height:auto; display:block;
   border-bottom:1px solid var(--line)}
 .shot figcaption{font-family:var(--font-mono); font-size:var(--fs-note);

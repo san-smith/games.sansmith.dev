@@ -5,6 +5,295 @@
     <link rel="self" type="application/atom+xml" href="https://games.sansmith.dev/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://games.sansmith.dev"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    
+    <updated>2026-09-29T00:00:00+00:00</updated>
     <id>https://games.sansmith.dev/atom.xml</id>
+    <entry xml:lang="ru">
+        <title>keldysh</title>
+        <published>2026-09-29T00:00:00+00:00</published>
+        <updated>2026-09-29T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Unknown</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://games.sansmith.dev/projects/keldysh/"/>
+        <id>https://games.sansmith.dev/projects/keldysh/</id>
+        
+        <content type="html" xml:base="https://games.sansmith.dev/projects/keldysh/">&lt;h2 id=&quot;zachem-eto-nuzhno&quot;&gt;Зачем это нужно&lt;/h2&gt;
+&lt;p&gt;Партия длится сотни ходов. Чтобы её можно было воспроизвести и передать другому
+игроку, недостаточно стараться не использовать случайность: нужен контракт.&lt;/p&gt;
+&lt;p&gt;Фреймворк задаёт этот контракт. Случайность выводится из семени партии и имени
+потока: новый поток не меняет поведение существующих, поэтому добавление механик
+не ломает старые записи партий.&lt;/p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="ru">
+        <title>vernadsky</title>
+        <published>2026-09-28T00:00:00+00:00</published>
+        <updated>2026-09-28T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Unknown</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://games.sansmith.dev/projects/vernadsky/"/>
+        <id>https://games.sansmith.dev/projects/vernadsky/</id>
+        
+        <content type="html" xml:base="https://games.sansmith.dev/projects/vernadsky/">&lt;h2 id=&quot;zachem-eto-nuzhno&quot;&gt;Зачем это нужно&lt;/h2&gt;
+&lt;p&gt;Планету для игры проще сгенерировать, чем нарисовать: карта нужна на тысячу
+провинций, и она должна быть правдоподобной. Рельеф, реки, климат и биомы
+связаны между собой, поэтому генерируются стадиями, каждая следующая
+опирается на предыдущие.&lt;/p&gt;
+&lt;p&gt;Генератор намеренно нейтрален: он описывает физическую географию и ничего не
+знает о фракциях, экономике, игровых провинциях и правилах симуляции. Базовая
+единица деления карты называется &lt;strong&gt;территория&lt;/strong&gt; — географическая единица без
+игровой семантики. Провинция, государство или морская зона — то, что читатель
+данных собирает из территорий и клеток уже на своей стороне.&lt;/p&gt;
+&lt;p&gt;Предыдущая попытка, &lt;code&gt;mapgen&lt;/code&gt;, была единым крейтом под конкретную игру.
+&lt;code&gt;vernadsky&lt;/code&gt; — то, во что она выросла: алгоритмы (рельеф, биомы, климат,
+разбиение на территории) перенесены, а границы проведены заново.&lt;/p&gt;
+&lt;h2 id=&quot;kak-ustroeno&quot;&gt;Как устроено&lt;/h2&gt;
+&lt;p&gt;Репозиторий — это Cargo workspace из восьми крейтов. Стадии идут в фиксированном
+порядке, и каждая работает с тем, что оставила предыдущая:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;core&lt;/code&gt; → &lt;code&gt;terrain&lt;/code&gt; → &lt;code&gt;climate&lt;/code&gt; → &lt;code&gt;biome&lt;/code&gt; → &lt;code&gt;hydrology&lt;/code&gt; → &lt;code&gt;territory&lt;/code&gt; →
+&lt;code&gt;export&lt;/code&gt; → &lt;code&gt;tools&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Вход всего конвейера — зерно и параметры; &lt;code&gt;skeleton_world(width, height, seed)&lt;/code&gt;
+в &lt;code&gt;vernadsky-core&lt;/code&gt; создаёт пустую сетку нужного размера, которую дальше
+заполняют стадии. Результат — одно значение &lt;code&gt;GeographicWorld&lt;/code&gt;, которое можно
+сразу записать в файл экспорта.&lt;/p&gt;
+&lt;h2 id=&quot;stadii&quot;&gt;Стадии&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;core&lt;/strong&gt; (&lt;code&gt;vernadsky-core&lt;/code&gt;) — контракт данных: схема &lt;code&gt;GeographicWorld&lt;/code&gt;,
+целочисленные решётки физических величин, пространства идентификаторов,
+канонический бинарный экспорт. Единственное место, где числа с плавающей
+точкой превращаются в экспортируемые значения.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;terrain&lt;/strong&gt; — рельеф: fBm-шум OpenSimplex2 на цилиндре (карта бесшовна по x,
+полюса зажимаются), эффект острова, сглаживание, степенная коррекция и
+нормировка min/max с целевой долей суши. На выходе — метры: уровень моря
+&lt;code&gt;0.5&lt;/code&gt; соответствует &lt;code&gt;0 м&lt;/code&gt;, шкала до ±6000 м. Эрозия подключается профилем
+(температурное выветривание и гидравлические капли из потока &lt;code&gt;terrain.erosion&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;climate&lt;/strong&gt; — среднегодовая температура, относительная влажность и осадки
+по клеткам, пересчитанные в физические единицы (°C, %, мм/год); шум
+температуры берётся из потока &lt;code&gt;climate.temperature&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;biome&lt;/strong&gt; — таблица из шестнадцати биомов как упорядоченные наборы правил
+(вода → горы → климат), все пороги лежат на решётках, граница между биомами
+дизерится по клеткам. Реестр &lt;code&gt;biomes-v1&lt;/code&gt; владеет соответствием
+идентификатор ↔ имя ↔ категория ↔ канонический цвет.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;hydrology&lt;/strong&gt; — водоёмы и речная сеть. Водоёмы классифицируются заливкой от
+полюса: океан, а замкнутые компоненты делятся на моря и озёра по площади.
+Реки строятся по накоплению стока — маршрутизация по убыванию высоты с
+каноническими разрешениями ничьих; лёд блокирует сток, пустыни испаряют
+половину. Порог дренажа задаётся долей от клеток суши (&lt;code&gt;0.12 %&lt;/code&gt;), поэтому
+сеть остаётся тонкой и ветвящейся на любой сетке.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;territory&lt;/strong&gt; — разбиение карты на территории: кандидаты на суше взвешиваются
+по климату и высоте, зёрна берутся равномерно по спектру весов, рост идёт
+многоисточниковым BFS с заполнением по ближайшему центроиду. Вода делится по
+связным компонентам, так что море никогда не остаётся одним неделимым
+пространством. Здесь же — регионы: континенты и морские бассейны как
+компоненты связности графа соседства территорий.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;export&lt;/strong&gt; — производные признаки: стартовый природный потенциал каждой
+территории суши (комфорт по температуре × влажность × равнинность, в
+промилле 0…1000) и нейтральные географические факты — близость к морю, устья
+рек, горный рельеф — как детерминированные запросы, которые потребитель
+трактует как порты, эстуарии и перевалы.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;tools&lt;/strong&gt; — отладочная утилита: рендерит слои мира и пишет экспорт.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Две стадии — &lt;code&gt;territory&lt;/code&gt; и &lt;code&gt;hydrology&lt;/code&gt; — не потребляют случайность вообще:
+их результат полностью определяется предыдущими стадиями.&lt;/p&gt;
+&lt;h2 id=&quot;kontrakt&quot;&gt;Контракт&lt;/h2&gt;
+&lt;p&gt;Данные, которые отдаёт генератор:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Схема&lt;/strong&gt; &lt;code&gt;GeographicWorld&lt;/code&gt; версии 1. Идентификаторы клеток, территорий,
+регионов, водоёмов, рек и биомов — часть публичного контракта: по ним
+потребители связывают данные между экспортами, поэтому смена способа вывода
+идентификаторов — ломающее изменение.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Решётки.&lt;/strong&gt; Все физические величины пересекают границу стадии и попадают в
+экспорт только как целые значения решёток. Это снимает вопрос платформенной
+арифметики: сравнивать и хешировать приходится целые.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Экспорт.&lt;/strong&gt; Канонический бинарный формат: magic &lt;code&gt;VGW\0&lt;/code&gt;, целые
+фиксированной ширины little-endian, у каждой переменной секции счётчик
+&lt;code&gt;u32&lt;/code&gt;. В конце — &lt;code&gt;content_hash&lt;/code&gt; (FNV-1a 64 по всем предыдущим байтам): это
+проверка целостности и воспроизводимости.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Версии.&lt;/strong&gt; Файл несёт версию схемы, стратегию идентификаторов, версию
+реестра решёток и версию реестра биомов (&lt;code&gt;biomes-v1&lt;/code&gt;) — файл самодостаточен
+для интерпретации.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;determinizm-i-upravliaemyi-dreif&quot;&gt;Детерминизм и управляемый дрейф&lt;/h2&gt;
+&lt;p&gt;Генерация — чистая функция от зерна и параметров: одни и те же входы дают
+байт в байт одинаковый результат на каждом запуске и каждой поддерживаемой
+платформе.&lt;/p&gt;
+&lt;p&gt;Случайность берётся из именованных потоков (&lt;code&gt;rng-streams-v1&lt;/code&gt;): поток &lt;code&gt;ChaCha8&lt;/code&gt;
+выводится из зерна мира и имени, закреплённого за стадией. Потоки независимы и
+перезапускаемы, поэтому добавление новой механики не сдвигает поведение уже
+существующих.&lt;/p&gt;
+&lt;p&gt;Чтобы это не разъехалось молча, в репозитории лежат золотые манифесты: набор
+семян (включая граничные значения) с закреплёнными хешами полных экспортов и
+канарейка чувствительности хеша. Случайная недетерминированность или дрейф
+схемы валят тесты.&lt;/p&gt;
+&lt;p&gt;Дрейф контента при этом бывает осознанным. Таких правок три, и каждая
+оформлена явно — с повышением версии параметров и перегенерацией золотых
+манифестов:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Порог дренажа рек стал независим от разрешения сетки (параметры v3).&lt;/li&gt;
+&lt;li&gt;Шум рельефа нормируется в пространстве карты: число базовых объектов —
+доля окружности карты (&lt;code&gt;features_across&lt;/code&gt;, по умолчанию &lt;code&gt;1.5&lt;/code&gt;), а не
+частота на клетку, плюс нижний предел детализации (&lt;code&gt;min_feature_cells&lt;/code&gt;,
+по умолчанию &lt;code&gt;8&lt;/code&gt;) против прибрежного «шума». Теперь любое разрешение
+рисует одну и ту же планету, а не рассыпается в архипелаг при росте
+сетки.&lt;/li&gt;
+&lt;li&gt;Сглаживание рельефа стало бесшовным по x (пока в невыпущенном разделе):
+раньше горизонтальное окно блюра зажималось на краях карты, и рельеф
+ломался на шве, хотя шум, подъём острова и эрозия уже замыкались по
+цилиндру.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;kak-poluchit-takuiu-kartu&quot;&gt;Как получить такую карту&lt;/h2&gt;
+&lt;p&gt;Сам генератор — библиотека; посмотреть на результат удобнее отладочной утилитой
+&lt;code&gt;vernadsky-tools&lt;/code&gt;. Это инструмент диагностики, не часть контракта генератора:
+тяжёлые зависимости вроде &lt;code&gt;image&lt;/code&gt; живут только в его крейте. Из входов нужен
+только seed — остальное имеет значения по умолчанию.&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;cargo&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; run&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; vernadsky-tools&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; render&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-seed&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; 42&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-grid-height&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; 512&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-width&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; 512&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-out&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; map&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Утилита собирает мир из семени через весь конвейер и растеризует каждый слой в
+свой PNG: имя файла — &lt;code&gt;&amp;lt;out&amp;gt;.&amp;lt;слой&amp;gt;.png&lt;/code&gt;, слой рисуется отдельной картой.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;map.height.png&lt;/code&gt; — высота;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map.water.png&lt;/code&gt; — вода;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map.rivers.png&lt;/code&gt; — реки;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map.temperature.png&lt;/code&gt;, &lt;code&gt;map.humidity.png&lt;/code&gt;, &lt;code&gt;map.precipitation.png&lt;/code&gt; — климат;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map.biome.png&lt;/code&gt; — биомы;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map.territory.png&lt;/code&gt;, &lt;code&gt;map.regions.png&lt;/code&gt; — территории и регионы;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map.potential.png&lt;/code&gt; — природный потенциал.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;По умолчанию сетка 48×32, разбиение — 12 территорий суши и 8 водных. Ключи
+&lt;code&gt;--width&lt;/code&gt; и &lt;code&gt;--grid-height&lt;/code&gt; задают разрешение, &lt;code&gt;--land-count&lt;/code&gt; и &lt;code&gt;--water-count&lt;/code&gt; —
+разбиение, &lt;code&gt;--zoom&lt;/code&gt; увеличивает картинку целым множителем (до 16×), если клеток
+мало и результат нужно рассмотреть.&lt;/p&gt;
+&lt;p&gt;Тот же мир сохраняется как канонический экспорт и читается обратно:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;cargo&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; run&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; vernadsky-tools&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; dump&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-seed&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; 42&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-width&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; 512&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-grid-height&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; 512&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-out&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; world.gwb&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;cargo&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; run&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; vernadsky-tools&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; validate&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-input&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; world.gwb&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;world written to world.gwb (262144 cells, 20 territories, pipeline 1.60s)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;valid export world.gwb: 512×512 cells, 20 territories, 7 regions, 4 water bodies, 293 rivers; seed 0x000000000000002a, params version 4&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Время конвейера зависит от машины; остальное — из самого файла. Мир можно читать
+и из экспорта, а не только из семени: &lt;code&gt;render --input world.gwb&lt;/code&gt; рисует те же слои
+по уже собранному файлу.&lt;/p&gt;
+&lt;h2 id=&quot;chto-poluchilos&quot;&gt;Что получилось&lt;/h2&gt;
+&lt;p&gt;Одна команда выше, семя 42, сетка 512×512: 262 144 клетки, 20 территорий,
+7 регионов, 4 водоёма и 293 реки. Климатические слои рисуются на фиксированных
+физических шкалах — поэтому картинки разных семян сравнимы между собой. В
+категориальных слоях правила тоже фиксированы: биомы берут канонические цвета
+реестра, территории и регионы — детерминированную палитру.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.height.png&quot; alt=&quot;Карта высот&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Высота.&lt;/strong&gt; Слой нормируется по самому миру, а не по общей шкале: тёмное — ниже,
+светлое — выше. Уровень моря — 0 м, полная шкала высот — ±6000 м.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.water.png&quot; alt=&quot;Карта воды&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Вода.&lt;/strong&gt; Светлое — суша, голубым — вода; оттенок различает океан, море и озеро.
+В этом мире четыре водоёма.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.rivers.png&quot; alt=&quot;Карта рек&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Реки.&lt;/strong&gt; 293 реки: подсвечены клетки русел — и на суше, и в воде.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.temperature.png&quot; alt=&quot;Карта температуры&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Температура.&lt;/strong&gt; Фиксированная шкала −90…+60 °C (палитра RdBu): тёплый пояс у
+экватора, холодные полюса.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.humidity.png&quot; alt=&quot;Карта влажности&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Влажность.&lt;/strong&gt; Фиксированная шкала 0…100 % (BrBG).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.precipitation.png&quot; alt=&quot;Карта осадков&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Осадки.&lt;/strong&gt; Фиксированная шкала 0…3000 мм/год (YlGnBu).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.biome.png&quot; alt=&quot;Карта биомов&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Биомы.&lt;/strong&gt; Шестнадцать биомов, цвета берутся из реестра &lt;code&gt;biomes-v1&lt;/code&gt; — одного на
+все слои и экспорты.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.territory.png&quot; alt=&quot;Карта территорий&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Территории.&lt;/strong&gt; 20 территорий — 12 на суше и 8 на воде, каждая своим цветом.
+Заполнение идёт по ближайшему центроиду, поэтому края зон многоугольные,
+со ступеньками по сетке клеток.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.regions.png&quot; alt=&quot;Карта регионов&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Регионы.&lt;/strong&gt; Те же территории, сгруппированные в континенты и морские бассейны:
+семь регионов вместо двадцати цветов.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/vernadsky/map.potential.png&quot; alt=&quot;Карта природного потенциала&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Природный потенциал.&lt;/strong&gt; По территориям суши, шкала 0…1000 ‰: от бурого к
+зелёному. Вода и клетки вне территорий остаются фоном.&lt;/p&gt;
+&lt;p&gt;Карты воспроизводимы: тот же запуск даёт те же файлы, и это свойство под
+проверкой, а не пожелание — за случайное расхождение отвечают золотые манифесты
+из раздела выше.&lt;/p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="ru">
+        <title>mapgen</title>
+        <published>2026-05-04T00:00:00+00:00</published>
+        <updated>2026-05-04T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Unknown</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://games.sansmith.dev/projects/mapgen/"/>
+        <id>https://games.sansmith.dev/projects/mapgen/</id>
+        
+        <content type="html" xml:base="https://games.sansmith.dev/projects/mapgen/">&lt;h2 id=&quot;chto-eto-bylo&quot;&gt;Что это было&lt;/h2&gt;
+&lt;p&gt;С этого началась работа над генерацией миров. &lt;code&gt;mapgen&lt;/code&gt; — единый крейт с
+библиотекой и консольной утилитой, который собирал карту целиком, от шума до
+провинций:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;карта высот — шум на цилиндрической проекции плюс эрозия;&lt;/li&gt;
+&lt;li&gt;климат — температура по широте, влажность от ветров и рельефа;&lt;/li&gt;
+&lt;li&gt;биомы — шестнадцать штук, по высоте, температуре и влажности;&lt;/li&gt;
+&lt;li&gt;вода — океаны и озёра поиском в ширину от краёв карты;&lt;/li&gt;
+&lt;li&gt;реки — накопление стока с прорезанием русла;&lt;/li&gt;
+&lt;li&gt;провинции — семена, рост заливкой, слияние мелких;&lt;/li&gt;
+&lt;li&gt;регионы — группа провинций по соседству и типу поверхности;&lt;/li&gt;
+&lt;li&gt;стратегические точки — порты, устья, перевалы;&lt;/li&gt;
+&lt;li&gt;экспорт — PNG-слои и JSON для игрового движка.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Мир настраивался TOML-файлом: сид, размеры, тип мира, параметры климата,
+островов и рельефа. Типов мира было шесть — EarthLike, Supercontinent,
+Archipelago, Mediterranean, IceAgeEarth, DesertMediterranean — с разной
+целевой долей суши, от 15 % у архипелага до 70 % у суперконтинента.&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;cargo&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; run&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-release&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-config&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; examples/earth_like.toml&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;-output&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; output/&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;На выходе получался набор карт (&lt;code&gt;biomes.png&lt;/code&gt;, &lt;code&gt;heightmap.png&lt;/code&gt;, &lt;code&gt;normals.png&lt;/code&gt;,
+&lt;code&gt;provinces.png&lt;/code&gt;, &lt;code&gt;regions.png&lt;/code&gt;, &lt;code&gt;rivers.png&lt;/code&gt;) и два файла данных:
+&lt;code&gt;provinces.json&lt;/code&gt; с геометрией, биомами и типом каждой провинции и
+&lt;code&gt;regions.json&lt;/code&gt; с их группировкой.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://games.sansmith.dev/projects/mapgen/biomes.png&quot; alt=&quot;Карта биомов, сгенерированная mapgen&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Карта биомов.&lt;/strong&gt; Пример &lt;code&gt;earth_like.toml&lt;/code&gt;, сид 42, сетка 512×512: 16 биомов,
+30 % суши, 120 провинций. Этот слой — тот самый набор биомов, который позже
+переехал в &lt;code&gt;vernadsky&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Эти же провинции умели собираться в
+WebAssembly — для браузера есть &lt;a rel=&quot;external&quot; href=&quot;https://san-smith.github.io/mapgen-web-demo/&quot;&gt;живая демонстрация&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;pochemu-poiavilsia-vernadsky&quot;&gt;Почему появился &lt;code&gt;vernadsky&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;mapgen&lt;/code&gt; писался под конкретную игру — Chronicles of Realms — и в этом была его
+слабость: алгоритмы и игровые допущения жили в одном месте, в одной
+библиотеке, которая знала про провинции и стратегические точки.&lt;/p&gt;
+&lt;p&gt;Практика показала, что генератор должен быть устроен иначе:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;нейтральным&lt;/strong&gt; — описывать только физическую географию и не знать ни про
+провинции, ни про правила игры;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;разбитым на стадии&lt;/strong&gt; — каждая со своим входом и выходом, а не один проход
+от шума до административного деления;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;с версионированным контрактом&lt;/strong&gt; — со схемой данных, стабильными
+идентификаторами и форматом, который можно читать годами;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;с проверяемой воспроизводимостью&lt;/strong&gt; — с контрольными семенами, за которые
+отвечают тесты, а не обещание в README.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Так появился &lt;a href=&quot;/projects/vernadsky/&quot;&gt;&lt;code&gt;vernadsky&lt;/code&gt;&lt;/a&gt; — отдельная библиотека, где
+эти четыре требования и есть конструкция проекта. &lt;code&gt;mapgen&lt;/code&gt; остался прототипом,
+на котором всё это было проверено на практике.&lt;/p&gt;
+&lt;h2 id=&quot;chto-pereekhalo&quot;&gt;Что переехало&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;mapgen&lt;/code&gt; не заброшен — его наработки перенесены в &lt;code&gt;vernadsky&lt;/code&gt; и работают там,
+уже в виде стадий:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;генерация карты высот — в стадию &lt;code&gt;terrain&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;климат (температура, влажность, осадки) — в &lt;code&gt;climate&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;таблица шестнадцати биомов с её порогами — в &lt;code&gt;biome&lt;/code&gt;, в реестр &lt;code&gt;biomes-v1&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;модель стока рек — в &lt;code&gt;hydrology&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;разбиение на провинции — в &lt;code&gt;territory&lt;/code&gt;, где единица деления называется
+территорией и не несёт игрового смысла.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Соответствие видно прямо в коде &lt;code&gt;vernadsky&lt;/code&gt;: портированные константы и формулы
+помечены ссылкой на прототип — например, шкала высот в &lt;code&gt;terrain&lt;/code&gt;, пороги
+биомов в &lt;code&gt;biome&lt;/code&gt;, начальный сток реки в &lt;code&gt;hydrology&lt;/code&gt;. Сверять поведение было с
+чем.&lt;/p&gt;
+&lt;p&gt;Дальше проекты разошлись: &lt;code&gt;vernadsky&lt;/code&gt; развивается как библиотека, &lt;code&gt;mapgen&lt;/code&gt;
+заморожен на версии 0.1.0 и остаётся историей — первой попыткой, которая
+показала, каким генератор быть не должен.&lt;/p&gt;
+</content>
+        
+    </entry>
 </feed>
